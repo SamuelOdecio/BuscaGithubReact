@@ -1,6 +1,6 @@
 export type Perfil = {
 
-    perfil:{
+    perfilGithub:{
         login:string,
         avatar_url:string,
         url: string

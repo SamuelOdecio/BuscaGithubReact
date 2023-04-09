@@ -6,6 +6,7 @@ const api = axios.create({
   });
 
 export async function getPerfil(){
-    const perfil = await api.get('')
+    const perfil = await api.get('https://api.github.com/users/${username}')
     return perfil.data.results
 }
+
