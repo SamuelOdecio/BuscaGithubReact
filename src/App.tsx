@@ -13,7 +13,7 @@ function App() {
 
       <Theme>
         <CssBaseline/>
-        <BaseLayout>
+        <BaseLayout appBarTitle="Busca Perfil Github">
           <FormLayout>
           </FormLayout>
         </BaseLayout>

@@ -4,6 +4,7 @@ type BaseLayoutProps = {
   children: React.ReactNode,
   appBarTitle: string
 }
+
 export function BaseLayout({ children, appBarTitle }: BaseLayoutProps) {
   return (
     <>
