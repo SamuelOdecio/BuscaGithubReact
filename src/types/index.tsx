@@ -1,12 +1,6 @@
 export type Perfil = {
-        login:string,
+        name:string,
         avatar_url:string,
         url: string
  }
 
-export type GithubUser = {
-    name: string;
-    bio: string;
-    avatar_url: string;
-}
- 
