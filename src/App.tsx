@@ -1,46 +1,46 @@
-import { Box, Button, CssBaseline, FormControl, FormHelperText, Grid, Input, InputLabel, TextField } from '@mui/material'
+import { Avatar, Box, Button, CircularProgress, CssBaseline, FormControl, FormHelperText, Grid, Input, InputLabel, TextField, Typography } from '@mui/material'
 
 import { BaseLayout } from './Layout/BaseLayout'
 import { Theme } from './ThemeProvider'
 import { FormLayout } from './Layout/FormLayout';
 import { getUser } from './services/api';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { useQueryClient } from '@tanstack/react-query/build/lib/QueryClientProvider';
-import { useState } from 'react';
-import { ReactJSXIntrinsicElements } from '@emotion/react/types/jsx-namespace';
-
-
-
+import { FormEvent, useState, useEffect } from 'react';
 
 type User = {
-  avatarURL: string,
-  htmlURL: string,
-  name: string
+  name: string,
+  avatar_url: string,
+  url: string
 }
-
-const queryClient = new QueryClient()
-
-
-
+const initialUser = {
+  avatar_url: "",
+  html_url: "",
+  name: ""
+}
 function App() {
-  const [search, setSearch] = useState("")
-  const inputRef = useRef(null);
+  const [user, setUser] = useState<User>(initialUser);
+  const [isLoading, setLoading] = useState(false)
 
-  const handleClick = () => {
-    const username = inputRef.current
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const inputUserName: HTMLInputElement = event.currentTarget.userName
+    setLoading(true)
+    setUser(await getUser(inputUserName.value))
+    setLoading(false)
   }
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["user-github"],
-    queryFn: () => { getUser(search) }
-  })
+
 
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <Theme>
-          <CssBaseline />
-          <BaseLayout appBarTitle="Busca Perfil Github">
+      <Theme>
+        <CssBaseline />
+        <BaseLayout appBarTitle="Busca Perfil Github">
+          <Box sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "300px 0",
+          }}>
             <Box
               sx={{
                 width: '1000px',
@@ -77,18 +77,20 @@ function App() {
                   }}
                 >
 
+                  <form onSubmit={handleSubmit}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        gap: '10px'
+                      }}>
 
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexDirection: 'column',
-                      gap: '10px'
-                    }}>
+                      <TextField fullWidth variant='outlined' name="userName" label='Pesquisar Perfil' />
+                      <Button variant="contained" color="primary" type="submit" sx={{ width: "100%" }}>Buscar</Button>
+                    </Box>
+                  </form>
 
-                    <TextField fullWidth variant='outlined' label='Pesquisar Perfil' value={search} ref={inputRef}/>
-                    <Button variant="contained" color="primary" onClick={handleClick} sx={{ width: "100%" }}>Buscar</Button>
-                  </Box>
 
                   <Box
                     sx={{
@@ -99,34 +101,37 @@ function App() {
                       flexDirection: 'column',
                     }}>
 
+                    {isLoading ? (<CircularProgress />) : (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                          width: '90%',
+                          height: '90%',
+                          borderRadius: '5px',
+                          backgroundColor: 'rgb(132, 0, 255)',
+                          padding: '15px',
+                          color: "white"
+                        }}>
 
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                        width: '90%',
-                        height: '90%',
-                        borderRadius: '5px',
-                        backgroundColor: 'rgb(132, 0, 255)',
-                        padding: '15px',
-                        color: "white"
-                      }}>
-                      <Box component="div" sx={{ borderRadius: '50%', width: '120px', height: '120px', backgroundColor: 'black' }} >
+                        <Box component="div" sx={{ borderRadius: '50%', width: '120px', height: '120px' }} >
+                          <img src={user.avatar_url}/>
+                        </Box>
 
+                        <Typography variant='h4'> {user.name}</Typography>
+                        <a href='https://github.com/S'>Perfil Github</a>
                       </Box>
+                    )}
 
-
-                      <h2>SAMUEL ODECIO</h2>
-                      <a href='https://github.com/S'>Perfil Github</a>
-                    </Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
-          </BaseLayout>
-        </Theme>
-      </QueryClientProvider>
+          </Box>
+        </BaseLayout>
+      </Theme>
+
     </>
   );
 
