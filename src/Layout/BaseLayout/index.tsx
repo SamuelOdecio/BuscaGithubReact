@@ -10,7 +10,7 @@ export function BaseLayout({ children, appBarTitle }: BaseLayoutProps) {
     <>
       <AppBar>
         <Toolbar>
-          <Typography variant='h5'> {appBarTitle}</Typography>
+          <Typography variant='h5'>{appBarTitle}</Typography>
         </Toolbar>
       </AppBar>
       <Box >

@@ -2,31 +2,30 @@ import { Avatar, Box, Button, CircularProgress, CssBaseline, FormControl, FormHe
 
 import { BaseLayout } from './Layout/BaseLayout'
 import { Theme } from './ThemeProvider'
-import { FormLayout } from './Layout/FormLayout';
-import { getUser } from './services/api';
+import { getUsers } from './services/api';
 import { FormEvent, useState, useEffect } from 'react';
 
-type User = {
-  name: string,
-  avatar_url: string,
-  url: string
+type Users = {
+  //login: string
+  avatar_url: string
+  name: string
+  html_url: string
+
 }
-const initialUser = {
-  avatar_url: "",
-  html_url: "",
-  name: ""
-}
-function App() {
-  const [user, setUser] = useState<User>(initialUser);
-  const [isLoading, setLoading] = useState(false)
+
+export function App() {
+  const [users, setUsers] = useState<Users>({ avatar_url: "", html_url: "", name: "" })
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const inputUserName: HTMLInputElement = event.currentTarget.userName
-    setLoading(true)
-    setUser(await getUser(inputUserName.value))
-    setLoading(false)
+    const form = event.currentTarget
+    const inputUserName: HTMLInputElement = form.userName
+    setIsLoading(true)
+    setUsers(await getUsers(inputUserName.value))
+    setIsLoading(false)
   }
+
 
 
 
@@ -101,27 +100,31 @@ function App() {
                       flexDirection: 'column',
                     }}>
 
-                    {isLoading ? (<CircularProgress />) : (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          flexDirection: 'column',
-                          width: '90%',
-                          height: '90%',
-                          borderRadius: '5px',
-                          backgroundColor: 'rgb(132, 0, 255)',
-                          padding: '15px',
-                          color: "white"
-                        }}>
 
-                        <Box component="div" sx={{ borderRadius: '50%', width: '120px', height: '120px' }} >
-                          <img src={user.avatar_url}/>
+
+                    {isLoading ? <CircularProgress /> : (
+                      <>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            width: '90%',
+                            height: '90%',
+                            borderRadius: '5px',
+                            backgroundColor: 'rgb(132, 0, 255)',
+                            padding: '15px',
+                            color: "white",
+                            gap:'5px'
+                          }}>
+
+                          <Box component="div" sx={{ borderRadius: '50%', width: '120px', height: '120px' }} >
+                          <Avatar src={users.avatar_url} sx={{ width: 130, height: 130 }} />
+                          </Box>
+                          <Typography gutterBottom variant="h4" />{users.name}<Typography/>
+                          <a target="_blank" style={{color: "black"}} href={users.html_url}>Perfil no GitHub</a>
                         </Box>
-
-                        <Typography variant='h4'> {user.name}</Typography>
-                        <a href='https://github.com/S'>Perfil Github</a>
-                      </Box>
+                      </>
                     )}
 
                   </Box>
