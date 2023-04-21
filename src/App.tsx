@@ -4,17 +4,19 @@ import { BaseLayout } from './Layout/BaseLayout'
 import { Theme } from './ThemeProvider'
 import { getUsers } from './services/api';
 import { FormEvent, useState, useEffect } from 'react';
+import IconBook from './components/bookicon';
 
 type Users = {
-  //login: string
   avatar_url: string
   name: string
   html_url: string
+  bio: string
+  public_repos: string
 
 }
 
 export function App() {
-  const [users, setUsers] = useState<Users>({ avatar_url: "", html_url: "", name: "" })
+  const [users, setUsers] = useState<Users>({ avatar_url: "", html_url: "", name: "", bio: "", public_repos: "" })
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -43,7 +45,7 @@ export function App() {
             <Box
               sx={{
                 width: '1000px',
-                height: '400px',
+                height: '450px',
                 backgroundColor: '#f0f0f0',
                 borderRadius: '1rem',
                 boxShadow: '0 0.2rem 0.5rem rgba(0, 0, 0, 0.2)',
@@ -76,30 +78,30 @@ export function App() {
                   }}
                 >
 
-                  <form onSubmit={handleSubmit}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                        gap: '10px'
-                      }}>
 
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexDirection: 'column',
+                      gap: '10px'
+                    }}>
+                    <form onSubmit={handleSubmit}>
                       <TextField fullWidth variant='outlined' name="userName" label='Pesquisar Perfil' />
                       <Button variant="contained" color="primary" type="submit" sx={{ width: "100%" }}>Buscar</Button>
-                    </Box>
-                  </form>
+                    </form>
+                  </Box>
+
 
 
                   <Box
                     sx={{
                       width: '600px',
-                      height: '300px',
+                      height: '350px',
                       display: 'flex',
                       alignItems: 'center',
                       flexDirection: 'column',
                     }}>
-
 
 
                     {isLoading ? <CircularProgress /> : (
@@ -115,17 +117,32 @@ export function App() {
                             backgroundColor: 'rgb(132, 0, 255)',
                             padding: '15px',
                             color: "white",
-                            gap:'5px'
+                            gap: '5px'
                           }}>
+                          <Box>
+                            <Box>
+                              <Box component="div" sx={{ borderRadius: '50%', width: '120px', height: '120px' }} >
+                                <Avatar src={users.avatar_url} sx={{ width: 130, height: 130 }} />
+                              </Box>
 
-                          <Box component="div" sx={{ borderRadius: '50%', width: '120px', height: '120px' }} >
-                          <Avatar src={users.avatar_url} sx={{ width: 130, height: 130 }} />
+                              <Typography gutterBottom variant="h4" />{users.name}<Typography />
+                              <a target="_blank" style={{ color: "white" }} href={users.html_url}>Perfil no GitHub</a>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  flexDirection: "column",
+                                  paddingTop:"40px"
+                                }}>
+                                <IconBook />
+                                <Typography gutterBottom variant="h5">{users.public_repos}</Typography>
+                              </Box>
+                            </Box>
                           </Box>
-                          <Typography gutterBottom variant="h4" />{users.name}<Typography/>
-                          <a target="_blank" style={{color: "black"}} href={users.html_url}>Perfil no GitHub</a>
                         </Box>
                       </>
                     )}
+
+
 
                   </Box>
                 </Box>
