@@ -8,7 +8,7 @@ type ThemeProps = {
 const theme = createTheme({
     palette: {
         primary: {
-          main: 'rgb(132, 0, 255)',
+          main: '##353634',
           dark:'#273035',
           light:'#5f6a6f'
         },
