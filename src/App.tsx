@@ -1,39 +1,50 @@
-import { Avatar, Box, Button, CircularProgress, CssBaseline, TextField } from '@mui/material'
+import { Avatar, Box, Button, CircularProgress, CssBaseline, TextField, Typography } from '@mui/material'
 
 import { BaseLayout } from './Layout/BaseLayout'
 import { Theme } from './ThemeProvider'
-import { getUsers } from './services/api';
 import { FormEvent, useState, useEffect } from 'react';
+import axios from 'axios';
 
-type Users = {
-  email: string
-  id: string
-  first_name: string
-  last_name: string
+type dadostip = {
+  avatar: string,
+  email: string,
+  first_name: string,
+  id: number,
+  last_name: string,
 
 }
 
 export function App() {
-  const [users, setUsers] = useState<Users>({ email: "", id: "", first_name: "", last_name: "" })
-  const [isLoading, setIsLoading] = useState(false)
+  const [dados, setDados] = useState<dadostip[]>([]);
+  const [numb, setNumb] = useState<any>(-1);
+  const [number, setNumber] = useState<any>(-1);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const form = event.currentTarget
-    const inputId: HTMLInputElement = form.Id
-    setIsLoading(true)
-    setUsers(await getUsers(inputId.value))
-    setIsLoading(false)
+
+
+  useEffect(() => {
+    getDados()
+  }, [])
+
+  const enviou = () => {
+    setNumber(numb)
   }
+  const getDados = async () => {
 
-
+    try {
+      const { data } = await axios.get('https://reqres.in/api/users')
+      setDados(data.data)
+      console.log(data.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 
   return (
     <>
       <Theme>
         <CssBaseline />
-        <BaseLayout appBarTitle="Busca Perfil">
+        <BaseLayout appBarTitle="API Usúarios">
           <Box sx={{
             display: "flex",
             alignItems: "center",
@@ -61,7 +72,7 @@ export function App() {
                     fontSize: "16px",
                     color: "#353634",
                   }}>
-                
+
                   <h2>BUSCA PERFIL</h2>
                 </Box>
 
@@ -76,20 +87,22 @@ export function App() {
                   }}
                 >
 
-                  <form onSubmit={handleSubmit}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                        gap: '10px'
-                      }}>
 
-                      <TextField fullWidth variant='outlined' name="Id" label='Pesquisar Perfil' />
-                      <Button variant="contained" color="primary" type="submit" sx={{ width: "100%" }}>Buscar</Button>
-                      {console.log('testeeeeee')}
-                    </Box>
-                  </form>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      flexDirection: 'column',
+                      gap: '40px'
+                    }}>
+
+                    <Typography variant='h6'>Código de Identificação</Typography>
+                    <TextField id="outlined-basic" onChange={(e) => setNumb(e.target.value)} label="número" variant="outlined" />
+                    <Button variant="contained" size="large" onClick={enviou}> 
+                      Buscar
+                    </Button>
+                  </Box>
+
 
 
                   <Box
@@ -99,22 +112,39 @@ export function App() {
                       display: 'flex',
                       alignItems: 'center',
                       flexDirection: 'column',
+                      
                     }}>
 
 
 
-                    {isLoading ? <CircularProgress /> : (
-                      <>
-                      <Box>
-                      {console.log('loading')}
-                        <p>{users.email}</p>
-                        <p>{users.id}</p>
-                        <p>{users.first_name}</p>
-                        <p>{users.last_name}</p>
+                    <Box sx={{ height: '70%', width: '300px' }}>
+
+                      <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        background:'#0f6fc5',
+                        padding:'50px',
+                        borderRadius: '10px'
+                      }}>
+
+                        <Avatar
+                          alt="Remy Sharp"
+                          src={dados[number]?.avatar || 'nao encontrado ainda'}
+                          sx={{ width: 66, height: 66 }}
+                        />
+
+                        <Typography gutterBottom variant="h5" component="div">
+                          {dados[number]?.first_name +' '+ dados[number]?.last_name || 'nao encontrado ainda'}
+                        </Typography>
+                        <Typography variant="h6" color="text.secondary">
+                          {dados[number]?.email || 'nao encontrado ainda'}
+                        </Typography>
 
                       </Box>
-                      </>
-                    )}
+
+                    </Box>
 
                   </Box>
                 </Box>
